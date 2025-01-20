@@ -1,0 +1,39 @@
+Clanker Docs
+Clanker is an autonomous agent for deploying tokens. Currently, users may request clanker to deploy an ERC-20 token on Base by tagging it @clanker on Farcaster.
+
+Getting started with clanker
+The only current requirement to using clanker is to have a Farcaster account with a reputable Neynar user score. Each Farcaster account may request clanker to deploy one token per day.
+
+To request clanker to deploy a token, tag clanker (@clanker) in a cast on Farcaster and provide a token name, token ticker, and optional image / gif in the body of the cast. Clanker will reply to the cast with one of three responses:
+
+Upon successful deployment, clanker will respond with a link to its website, clanker.world with a link to the token page of the deployed token.
+If the request is not clear to clanker, clanker will respond with clarifying questions in order to determine the token name, ticker, and whether the Requestor wants to deploy the token.
+If the Requestor is unable to deploy a token for various reasons (token deployment limit reach, Requestor's Neynar user score is too low, Requestor has been banned from using clanker).
+Token deployment
+After receiving a valid token deployment request, clanker deploys an ERC-20 token on Base by calling the Clanker.sol contract:
+
+Initial token minting: a new ERC-20 token is minted to the deployer contract.
+Uniswap V3 pool creation: a Uniswap V3 pool is initialized with a starting market cap of ~$30k.
+Liquidity provision to the pool: the ERC-20 tokens are sent from the deployer contract to the Uniswap V3 Nonfungible Position Manager to add single-sided liquidity to the pool.
+Liquidity locking: the LP NFT is then sent to the LP locker contract with a default lock period of 2100 (4132317178 unix timestamp)
+Fee structure and rewards
+As Clanker deploys tokens, it initiates 1% fee Uniswap V3 pools on Base. As each token is traded, 1% of each swap in this pool is collected and is assigned as a reward:
+
+60% of swap fees - Protocol (Clanker)
+40% of swap fees - Requestor (user who requested Clanker to deploy the token)
+The fee split for any token can be found at the fee rate set on the lpFeesCut and protocolCut functions of the Clanker contract at time of token deployment.
+
+Note: Fees and fee splits are subject to change. Tokens deployed prior to Thursday, November 14th, 2024 had a 75% Protocol / 25% Requestor fee split, with 1% of the token supply assigned to the Requestor with a one-month vesting period and cliff. The Requestor supply allocation will be reimplemented following contract updates.
+
+Claiming rewards
+Self-service reward claiming (coming soon)
+Following contract upgrades and Warpcast feature upgrades, rewards will be claimable by Requestors themselves both through their respective token's clanker.world page and / or via direct smart contract interaction from a block explorer.
+
+Detailed instructions for self-service reward claiming (for v0, v1, and v2 contracts) to come shortly after v2 contract upgrades slated for 11-29-2024.
+
+Legacy reward distributions
+Token & WETH fees accrued up until 11-18-2024 were claimed by the clanker DevCo. These rewards will be distributed to Requestors' latest Verified Address on Farcaster.
+
+The WETH portion of these rewards was distributed on 11-23-2024. The DevCo is currently working on distributing the Token portion of these rewards.
+
+The clanker DevCo is working on scripts for the distribution of Token fees that were already claimed for manual distribution.
